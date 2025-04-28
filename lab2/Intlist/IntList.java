@@ -100,16 +100,14 @@ public class IntList {
         IntList res = new IntList(A.first, null);
         IntList ptr = res;
         A = A.rest;
-        while (A != null) {
+        while (A.rest != null) {
             ptr.rest = new IntList(A.first, null);
             A = A.rest;
             ptr = ptr.rest;
         }
-        while (B != null) {
-            ptr.rest = new IntList(B.first, null);
-            B = B.rest;
-            ptr = ptr.rest;
-        }
+        ptr.rest = new IntList(A.first, null);
+        ptr = ptr.rest;
+        ptr.rest = B;
         return res;
 
 //        if (A.rest == null) {
