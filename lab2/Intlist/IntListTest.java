@@ -65,5 +65,8 @@ public class IntListTest {
         assertEquals(exp, IntList.catenate(A, B));
         assertEquals(IntList.of(1, 2, 3), A);
     }
-
+// 双精度浮点数要使用更多的内存；
+// 运算时会有精度丢失
+    // 没有差异，这只是一个指针，代表一个地址
+    //
 }
