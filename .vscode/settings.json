@@ -1,0 +1,6 @@
+{
+    "git.ignoreLimitWarning": true,
+    "java.project.referencedLibraries": [
+        "library-sp18-master/javalib/**/*.jar"
+    ]
+}
