@@ -33,6 +33,18 @@ public class IntList {
         this(0, null);
     }
 
+    public void addAdjacent() {
+        IntList p = this;
+        while (p != null && p.rest != null) {
+            if (p.first == p.rest.first) {
+                p.first += p.rest.first;
+                p.rest = p.rest.rest;
+            } else {
+                p = p.rest;
+            }
+        }
+    }
+
     /**
      * Returns a list equal to L with all elements squared. Destructive.
      */
