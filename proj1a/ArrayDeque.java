@@ -71,26 +71,26 @@ public class ArrayDeque<T> {
             return null;
         }
         // 和下方的 get 不同，如果不特判特殊情况，可能会导致NullPointerException
-        size--;
         T p = items[front];
         items[front] = null;
         front = (front + 1) % items.length;
+        size--;
         if (size > MIN_LENGTH_ARRAY && items.length < size * 0.25) {
-            reItemSize(size / 2);
+            reItemSize(items.length / 2);
         }
         return p;
     }
 
     public T removeLast() {
-        if (size == 0) {
+        if (isEmpty()) {
             return null;
         }
-        size--;
         T p = items[last];
-        items[last] = null;
         last = (last - 1 + items.length) % items.length;
+        items[last] = null;
+        size--;
         if (size > MIN_LENGTH_ARRAY && items.length < size * 0.25) {
-            reItemSize(size / 2);
+            reItemSize(items.length / 2);
         }
         return p;
     }
