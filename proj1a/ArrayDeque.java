@@ -22,6 +22,7 @@ public class ArrayDeque<T> {
     }
 
     private void reItemSize(int newCapacity) {
+
         T[] newItems = (T[]) new Object[newCapacity];
         for (int i = 0; i < size; i++) {
             newItems[i] = items[(front + i) % items.length];
@@ -87,7 +88,7 @@ public class ArrayDeque<T> {
         items[front] = null;
         front = (front + 1) % items.length;
         size--;
-        if (size > MIN_LENGTH_ARRAY && size < items.length * 0.25) {
+        while (size > MIN_LENGTH_ARRAY && size < items.length * 0.25) {
             reItemSize(items.length / 2);
         }
         return p;
@@ -101,7 +102,7 @@ public class ArrayDeque<T> {
         T p = items[last];
         items[last] = null;
         size--;
-        if (size > MIN_LENGTH_ARRAY && size < items.length * 0.25) {
+        while (size > MIN_LENGTH_ARRAY && size < items.length * 0.25) {
             reItemSize(items.length / 2);
         }
         return p;
