@@ -1,61 +1,57 @@
-public class ArrayDeque {
-    private int[] items;
+public class ArrayDeque<T> {
+    private T[] items;
     private int front;
     private int last;
     private int size;
 
+    private static final int MIN_LENGTH_ARRAY = 16;
+
     public ArrayDeque() {
-        items = new int[8];
-        front = 3;
-        last = 4;
+        items = (T[]) new Object[8];
+        front = 0;
+        last = 0;
         size = 0;
     }
 
-    public void addFirst(int i) {
-        if (size == items.length) {
-            int[] p = items;
-            items = new int[size * 2];
-            for (int j = 0; j < size; j++) {
-                items[front + j] = p[front + j];
-            }
+    private void reItemSize(int newCapacity) {
+        T[] newItems = (T[]) new Object[newCapacity];
+        for (int i = 0; i < size; i++) {
+            newItems[i] = items[(front + i) % items.length];
         }
 
-        if (front == 0) {
-            front = items.length - 1;
-            items[front] = i;
-        } else {
-            front = front - 1;
-            items[front] = i;
-            size++;
-        }
+        // 为什么不是size？
+        // 用 items.length 从下标0开始
+        // items.length 代表此时实际有的 item 个数
+        front = 0;
+        last = size;
+        items = newItems;
     }
 
-    public void addLast(int i) {
+    public void addFirst(T i) {
         if (size == items.length) {
-            int[] p = items;
-            items = new int[size * 2];
-            for (int j = 0; j < size; j++) {
-                items[front + j] = p[front + j];
-            }
+            reItemSize(size * 2);
         }
+        front = (front - 1 + items.length) % items.length;
+        // 为什么要加 items.length ?
+        // items.length 有可能为 0 ，加上 items.length 后取余才可以达成目标
+        // python中的 range(::-1) 有可能就是这样写的
+        items[front] = i;
+        size++;
 
-        if (last == items.length - 1) {
-            last = 0;
-            items[last] = i;
-        } else {
-            last = last + 1;
-            items[last] = i;
-            size++;
+    }
+
+    public void addLast(T i) {
+        if (size == items.length) {
+            reItemSize(size * 2);
         }
+        last = (last + 1) % items.length;
+        items[last] = i;
+        size++;
+
     }
 
     public boolean isEmpty() {
-        if (size == 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return size == 0;
     }
 
     public int size() {
@@ -63,42 +59,48 @@ public class ArrayDeque {
     }
 
     public void printDeque() {
-        int p = front;
-        while (p != last) {
-            System.out.print(items[p] + " ");
-            p++;
+        int current = front;
+        for (int i = 0; i < size; i++) {
+            System.out.print(items[current] + " ");
+            current = (current + 1) % items.length;
         }
     }
 
-    public int removeFirst() {
-        int p = front;
-        front = front + 1;
+    public T removeFirst() {
+        if (size == 0) {
+            return null;
+        }
+        // 和下方的 get 不同，如果不特判特殊情况，可能会导致NullPointerException
         size--;
-        if (size < items.length / 4 && items.length < 16) {
-            int[] p2 = items;
-            items = new int[items.length / 2];
-            for (int j = 0; j < size; j++) {
-                items[j] = p2[front + j];
-            }
+        T p = items[front];
+        items[front] = null;
+        front = (front + 1) % items.length;
+        if (size > MIN_LENGTH_ARRAY && items.length < size * 0.25) {
+            reItemSize(size / 2);
         }
-        return items[p];
+        return p;
     }
 
-    public int removeLast() {
-        int p = last;
-        last = last - 1;
+    public T removeLast() {
+        if (size == 0) {
+            return null;
+        }
         size--;
-        if (size < items.length / 4 && items.length < 16) {
-            int[] p2 = items;
-            items = new int[items.length / 2];
-            for (int j = 0; j < size; j++) {
-                items[j] = p2[front + j];
-            }
+        T p = items[last];
+        items[last] = null;
+        last = (last - 1 + items.length) % items.length;
+        if (size > MIN_LENGTH_ARRAY && items.length < size * 0.25) {
+            reItemSize(size / 2);
         }
-        return items[p];
+        return p;
     }
 
-    public int get(int index) {
-        return items[front + index];
+    public T get(int index) {
+        if (index < 0 || index >= size) {
+            // index < 0 || index >= size 是用户输入错误，
+            // 但是如果 size = 0 呢？ return null 自己会触发，因为上文的 remove 已经将去掉的数字格子还原成 null 了
+            return null;
+        }
+        return items[(front + index) % items.length];
     }
 }
