@@ -88,7 +88,7 @@ public class ArrayDeque<T> {
         items[front] = null;
         front = (front + 1) % items.length;
         size--;
-        while (size > MIN_LENGTH_ARRAY && size < items.length * 0.25) {
+        if (size > MIN_LENGTH_ARRAY && size < items.length * 0.25) {
             reSize(items.length / 2);
         }
         return p;
@@ -102,7 +102,7 @@ public class ArrayDeque<T> {
         T p = items[last];
         items[last] = null;
         size--;
-        while (size > MIN_LENGTH_ARRAY && size < items.length * 0.25) {
+        if (size > MIN_LENGTH_ARRAY && size < items.length * 0.25) {
             reSize(items.length / 2);
         }
         return p;
