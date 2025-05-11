@@ -2,6 +2,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TestOffByN {
+
     @Test
     public void testequalChars() {
         OffByN offby5 = new OffByN(5);

@@ -6,6 +6,7 @@ public class ArrayDeque<T> implements Deque<T> {
 
     private static final int MIN_LENGTH_ARRAY = 16;
 
+    @SuppressWarnings("unchecked")
     public ArrayDeque() {
         items = (T[]) new Object[8];
         front = 0;
