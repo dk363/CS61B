@@ -13,7 +13,6 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> implements Itera
     private int last = 0;
     /* Array for storing the buffer data. */
     private T[] rb;
-    private int fillCount = 0;
 
     /**
      * Create a new ArrayRingBuffer with the given capacity.
@@ -26,6 +25,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> implements Itera
         //       you'll need to use this.capacity to set the capacity.
         this.capacity = capacity;
         this.rb = (T[])new Object[capacity];
+        this.fillCount = 0;
     }
 
     /**
@@ -73,6 +73,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> implements Itera
         }
         return rb[first];
     }
+
 
     @Override
     public Iterator<T> iterator() {

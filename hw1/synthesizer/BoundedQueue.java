@@ -1,4 +1,5 @@
 package synthesizer;
+
 import java.util.Iterator;
 
 public interface BoundedQueue<T> extends Iterable<T>{
