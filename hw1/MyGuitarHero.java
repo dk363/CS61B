@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.util.Base64;
 import java.util.zip.GZIPInputStream;
 
-public class myGuitarHero {
+public class MyGuitarHero {
     public static void main(String[] args) {
         try {
             InputStream source = new ByteArrayInputStream(Base64.getDecoder().decode(TTFAF));
