@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import lab9.BSTMap;
 
+import java.util.Collections;
+
 /**
  * Tests by Brendan Hu, Spring 2015, revised for 2018 by Josh Hug
  */
@@ -36,6 +38,7 @@ public class TestBSTMap {
         assertEquals(455, b.size());
         b.clear();
         assertEquals(0, b.size());
+        assertTrue(b.keySet().isEmpty());
         for (int i = 0; i < 455; i++) {
             assertTrue(null == b.get("hi" + i) && !b.containsKey("hi" + i));
         }
@@ -46,8 +49,10 @@ public class TestBSTMap {
     public void sanityContainsKeyTest() {
         BSTMap<String, Integer> b = new BSTMap<String, Integer>();
         assertFalse(b.containsKey("waterYouDoingHere"));
+        assertFalse(b.keySet().contains("waterYouDoingHere"));
         b.put("waterYouDoingHere", 0);
         assertTrue(b.containsKey("waterYouDoingHere"));
+        assertTrue(b.keySet().contains("waterYouDoingHere"));
     }
 
     // assumes put works
@@ -56,12 +61,17 @@ public class TestBSTMap {
         BSTMap<String, Integer> b = new BSTMap<String, Integer>();
         assertEquals(null, b.get("starChild"));
         assertEquals(0, b.size());
+        assertTrue(b.keySet().isEmpty());
+
         b.put("starChild", 5);
         assertTrue(((Integer) b.get("starChild")).equals(5));
+        assertTrue(b.keySet().contains("starChild"));
+
         b.put("KISS", 5);
         assertTrue(((Integer) b.get("KISS")).equals(5));
         assertNotEquals(null, b.get("starChild"));
         assertEquals(2, b.size());
+        assertTrue(b.keySet().contains("KISS"));
     }
 
     // assumes put works
@@ -69,6 +79,7 @@ public class TestBSTMap {
     public void sanitySizeTest() {
         BSTMap<String, Integer> b = new BSTMap<String, Integer>();
         assertEquals(0, b.size());
+        assertTrue(b.keySet().isEmpty());
         b.put("hi", 1);
         assertEquals(1, b.size());
         for (int i = 0; i < 455; i++) {
