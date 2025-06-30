@@ -12,7 +12,9 @@ public class PercolationStats {
 
     // 在 N×N 的网格上执行 T 次独立的渗流实验
     public PercolationStats(int N, int T, PercolationFactory pf) {
-        if (N <= 0 || T <= 0) throw new IllegalArgumentException("N and T must > 0");
+        if (N <= 0 || T <= 0) {
+            throw new IllegalArgumentException("N and T must > 0");
+        }
 
         // initial
 

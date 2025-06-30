@@ -52,7 +52,9 @@ public class Percolation {
             ufFullCheck.union(index, virtueTop);
         }
 
-        if (row == n - 1) ufPercolates.union(index, virtueBottom);
+        if (row == n - 1) {
+            ufPercolates.union(index, virtueBottom);
+        }
 
         connectIfOpen(row + 1, col, index);
         connectIfOpen(row - 1, col, index);
