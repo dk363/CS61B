@@ -4,10 +4,11 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class PercolationStats {
+    private final double percolaFactor = 1.96;
+
     private Random rm;
     private Percolation ps;
     private double[] thresholds;
-    private double stddev;
 
     // 在 N×N 的网格上执行 T 次独立的渗流实验
     public PercolationStats(int N, int T, PercolationFactory pf) {
@@ -50,11 +51,11 @@ public class PercolationStats {
 
     // 返回 95% 置信区间的下限
     public double confidenceLow() {
-        return mean() - 1.96 * stddev / Math.sqrt(thresholds.length);
+        return mean() - percolaFactor * stddev() / Math.sqrt(thresholds.length);
     }
 
     // 返回 95% 置信区间的上限
     public double confidenceHigh() {
-        return mean() + 1.96 * stddev / Math.sqrt(thresholds.length);
+        return mean() + percolaFactor * stddev() / Math.sqrt(thresholds.length);
     }
 }

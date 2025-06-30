@@ -18,7 +18,9 @@ public class Percolation {
 
     // 创建一个 N×N 的网格，初始时所有位置都是阻塞的
     public Percolation(int n) {
-        if (n <= 0) throw new IllegalArgumentException("grid size must > 0");
+        if (n <= 0) {
+            throw new IllegalArgumentException("grid size must > 0");
+        }
 
         this.n = n;
         this.grid = new boolean[n][n];
@@ -36,7 +38,9 @@ public class Percolation {
     public void open(int row, int col) {
         validDate(row, col);
 
-        if (grid[row][col]) return;
+        if (grid[row][col]) {
+            return;
+        }
 
         grid[row][col] = true;
         openSites += 1;
@@ -95,9 +99,12 @@ public class Percolation {
     }
 
     private void validDate(int row, int col) {
-        if (row < 0 || row > n - 1 || col < 0 || col > n - 1) throw new IllegalArgumentException("row and col must be between 0 and " + (n - 1));
-
+        if (row < 0 || row >= n || col < 0 || col >= n) {
+            System.out.println("Invalid input: row = " + row + ", col = " + col + ", n = " + n);
+            throw new IndexOutOfBoundsException("row and col must be between 0 and " + (n - 1));
+        }
     }
+
 
     // 用于单元测试（不是必须的）
     public static void main(String[] args) {
