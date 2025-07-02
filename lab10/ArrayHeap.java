@@ -1,55 +1,51 @@
 import org.junit.Test;
+
+import java.util.NoSuchElementException;
+
 import static org.junit.Assert.*;
 
 /**
- * A Generic heap class. Unlike Java's priority queue, this heap doesn't just
- * store Comparable objects. Instead, it can store any type of object
- * (represented by type T), along with a priority value. Why do it this way? It
- * will be useful later on in the class...
- */
+ * 这指的是一个泛型堆类。
+ * 与 Java 的优先级队列不同，这个堆不仅存储可比较对象，它还可以存储任何类型的对象（由类型 T 表示），
+ * 以及一个优先级值。之所以这样设计，是为了后续课程中的用途。 */
 public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     private Node[] contents;
     private int size;
+    private static final int ROOT_INDEX = 1;
 
     public ArrayHeap() {
         contents = new ArrayHeap.Node[16];
 
-        /* Add a dummy item at the front of the ArrayHeap so that the getLeft,
-         * getRight, and parent methods are nicer. */
+        /* 在 ArrayHeap 的开头添加一个虚拟项，以便 getLeft、getRight 和 parent 方法更简洁。*/
         contents[0] = null;
 
-        /* Even though there is an empty spot at the front, we still consider
-         * the size to be 0 since nothing has been inserted yet. */
+        /* 尽管前端有一个空位，但我们仍然认为大小为 0，因为尚未插入任何内容。*/
         size = 0;
     }
 
     /**
-     * Returns the index of the node to the left of the node at i.
+     * 返回位于索引 i 处节点的左侧节点的索引。
      */
     private static int leftIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return 2 * i;
     }
 
     /**
-     * Returns the index of the node to the right of the node at i.
+     * 返回位于索引 i 处节点的右侧节点的索引。
      */
     private static int rightIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return 2 * i + 1;
     }
 
     /**
-     * Returns the index of the node that is the parent of the node at i.
+     * 返回位于索引 i 处节点的父节点的索引。
      */
     private static int parentIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return i / 2;
     }
 
     /**
-     * Gets the node at the ith index, or returns null if the index is out of
-     * bounds.
+     * 获取位于索引 i 处的节点；如果索引超出范围，则返回 null。
      */
     private Node getNode(int index) {
         if (!inBounds(index)) {
@@ -59,9 +55,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     }
 
     /**
-     * Returns true if the index corresponds to a valid item. For example, if
-     * we have 5 items, then the valid indices are 1, 2, 3, 4, 5. Index 0 is
-     * invalid because we leave the 0th entry blank.
+     * 如果索引对应一个有效项，则返回 true。例如，如果
+     * 我们有 5 个项，那么有效索引是 1, 2, 3, 4, 5。索引 0 是
+     * 无效的，因为我们将第 0 个条目留空。
      */
     private boolean inBounds(int index) {
         if ((index > size) || (index < 1)) {
@@ -71,7 +67,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     }
 
     /**
-     * Swap the nodes at the two indices.
+     * 交换两个索引处的节点。
      */
     private void swap(int index1, int index2) {
         Node node1 = getNode(index1);
@@ -82,8 +78,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
 
 
     /**
-     * Returns the index of the node with smaller priority. Precondition: not
-     * both nodes are null.
+     * 返回具有较小优先级的节点的索引。前置条件：两个节点不能都为空。
      */
     private int min(int index1, int index2) {
         Node node1 = getNode(index1);
@@ -101,70 +96,99 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
 
 
     /**
-     * Bubbles up the node currently at the given index.
+     * 将当前位于给定索引处的节点上浮。
      */
     private void swim(int index) {
-        // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
-        validateSinkSwimArg(index);
+        validateSinkSwimArg(index); // 确保当前要上浮的节点是有效的
 
-        /** TODO: Your code here. */
-        return;
+        // 只要不是根节点 (index > 1) 且当前节点的优先级小于其父节点的优先级，就继续上浮
+        while (index > ROOT_INDEX && contents[index].myPriority < contents[parentIndex(index)].myPriority) {
+            swap(index, parentIndex(index));
+            index = parentIndex(index); // 更新当前节点的索引，继续上浮
+        }
     }
 
+
     /**
-     * Bubbles down the node currently at the given index.
+     * 将当前位于给定索引处的节点下沉。
      */
     private void sink(int index) {
-        // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
+        while (true) { // 使用无限循环，内部条件跳出
+            int left = leftIndex(index);
+            int right = rightIndex(index);
+            int smallest = index; // 假设当前节点最小
 
-        /** TODO: Your code here. */
-        return;
+            if (inBounds(left) && contents[left].myPriority < contents[smallest].myPriority) {
+                smallest = left;
+            }
+            if (inBounds(right) && contents[right].myPriority < contents[smallest].myPriority) {
+                smallest = right;
+            }
+
+            if (smallest == index) { // 如果当前节点最小，则停止下沉
+                break;
+            }
+
+            swap(index, smallest);
+            index = smallest; // 继续下沉到新的位置
+        }
     }
 
+
     /**
-     * Inserts an item with the given priority value. This is enqueue, or offer.
-     * To implement this method, add it to the end of the ArrayList, then swim it.
+     * 插入具有给定优先级值的项。这是入队或提供。
+     * 要实现此方法，请将其添加到 ArrayList 的末尾，然后上浮它。
      */
     @Override
     public void insert(T item, double priority) {
-        /* If the array is totally full, resize. */
+        /* 如果数组已满，则调整大小。 */
         if (size + 1 == contents.length) {
             resize(contents.length * 2);
         }
 
-        /* TODO: Your code here! */
+        size += 1;
+        contents[size] = new Node(item, priority);
+
+        swim(size);
     }
 
     /**
-     * Returns the Node with the smallest priority value, but does not remove it
-     * from the heap. To implement this, return the item in the 1st position of the ArrayList.
+     * 返回具有最小优先级值的节点，但不将其从堆中移除。要实现此功能，请返回 ArrayList 中第一个位置的项。
      */
     @Override
     public T peek() {
-        /* TODO: Your code here! */
-        return null;
+        if (size == 0) {
+            throw new NoSuchElementException("Heap is empty");
+        }
+        return contents[ROOT_INDEX].myItem;
     }
 
     /**
-     * Returns the Node with the smallest priority value, and removes it from
-     * the heap. This is dequeue, or poll. To implement this, swap the last
-     * item from the heap into the root position, then sink the root. This is
-     * equivalent to firing the president of the company, taking the last
-     * person on the list on payroll, making them president, and then demoting
-     * them repeatedly. Make sure to avoid loitering by nulling out the dead
-     * item.
+     * 返回具有最小优先级值的节点，并将其从堆中移除。这是出队或轮询。
+     * 要实现此功能，请将堆中的最后一项交换到根位置，然后下沉根。
+     * 这相当于解雇公司的总裁，将名单上最后一名员工提拔为总裁，然后反复降职。
+     * 请确保通过将“死亡”项设为 null 来避免闲置。
      */
     @Override
     public T removeMin() {
-        /* TODO: Your code here! */
-        return null;
+        if (size == 0) {
+            throw new NoSuchElementException("Heap is empty");
+        }
+
+        Node min = contents[ROOT_INDEX];
+        swap(ROOT_INDEX, size);
+        contents[size] = null;
+        size -= 1;
+
+        sink(ROOT_INDEX);
+
+        return min.myItem;
     }
 
     /**
-     * Returns the number of items in the PQ. This is one less than the size
-     * of the backing ArrayList because we leave the 0th element empty. This
-     * method has been implemented for you.
+     * 返回 PQ 中的项目数量。这比支持 ArrayList 的大小少一个，因为我们将第 0 个元素留空。
+     * 此方法已为您实现。
      */
     @Override
     public int size() {
@@ -172,27 +196,37 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     }
 
     /**
-     * Change the node in this heap with the given item to have the given
-     * priority. You can assume the heap will not have two nodes with the same
-     * item. Check item equality with .equals(), not ==. This is a challenging
-     * bonus problem, but shouldn't be too hard if you really understand heaps
-     * and think about the algorithm before you start to code.
+     * 将此堆中具有给定项的节点更改为具有给定优先级。您可以假设堆中不会有两个具有相同项的节点。
+     * 使用 .equals() 而不是 == 检查项相等性。这是一个具有挑战性的奖励问题，
+     * 但如果您真正理解堆并在开始编码之前考虑算法，它应该不会太难。
      */
     @Override
-    public void changePriority(T item, double priority) {
-        /* TODO: Your code here! */
-        return;
+    public void changePriority(T item, double givenPriority) {
+        for (int i = 1; i < contents.length; i++) {
+            Node c = contents[i];
+            if (c != null && c.myItem.equals(item)) {
+                if (c.myPriority > givenPriority) {
+                    c.myPriority = givenPriority;
+                    swim(i);
+                    break;
+                } else if (c.myPriority < givenPriority) {
+                    c.myPriority = givenPriority;
+                    sink(i);
+                    break;
+                }
+            }
+        }
     }
 
     /**
-     * Prints out the heap sideways. Provided for you.
+     * 将堆侧向打印出来。已为您提供。
      */
     @Override
     public String toString() {
         return toStringHelper(1, "");
     }
 
-    /* Recursive helper method for toString. */
+    /* toString 的递归辅助方法。 */
     private String toStringHelper(int index, String soFar) {
         if (getNode(index) == null) {
             return "";
@@ -215,17 +249,17 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
 
 
     /**
-     * Throws an exception if the index is invalid for sinking or swimming.
+     * 如果索引对于下沉或上浮无效，则抛出异常。
      */
     private void validateSinkSwimArg(int index) {
         if (index < 1) {
-            throw new IllegalArgumentException("Cannot sink or swim nodes with index 0 or less");
+            throw new IllegalArgumentException("无法对索引为 0 或更小的节点进行下沉或上浮操作");
         }
         if (index > size) {
-            throw new IllegalArgumentException("Cannot sink or swim nodes with index greater than current size.");
+            throw new IllegalArgumentException("无法对索引大于当前大小的节点进行下沉或上浮操作。");
         }
         if (contents[index] == null) {
-            throw new IllegalArgumentException("Cannot sink or swim a null node.");
+            throw new IllegalArgumentException("无法对空节点进行下沉或上浮操作。");
         }
     }
 
@@ -253,7 +287,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     }
 
 
-    /** Helper function to resize the backing array when necessary. */
+    /** 必要时用于调整底层数组大小的辅助函数。 */
     private void resize(int capacity) {
         Node[] temp = new ArrayHeap.Node[capacity];
         for (int i = 1; i < this.contents.length; i++) {
@@ -282,16 +316,16 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         for (int i = 1; i <= 7; i += 1) {
             pq.contents[i] = new ArrayHeap<String>.Node("x" + i, i);
         }
-        // Change item x6's priority to a low value.
+        // 将项 x6 的优先级更改为较低的值。
 
         pq.contents[6].myPriority = 0;
-        System.out.println("PQ before swimming:");
+        System.out.println("上浮前的 PQ：");
         System.out.println(pq);
 
-        // Swim x6 upwards. It should reach the root.
+        // 将 x6 上浮。它应该到达根部。
 
         pq.swim(6);
-        System.out.println("PQ after swimming:");
+        System.out.println("上浮后的 PQ：");
         System.out.println(pq);
         assertEquals("x6", pq.contents[1].myItem);
         assertEquals("x2", pq.contents[2].myItem);
@@ -309,14 +343,14 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         for (int i = 1; i <= 7; i += 1) {
             pq.contents[i] = new ArrayHeap<String>.Node("x" + i, i);
         }
-        // Change root's priority to a large value.
+        // 将根的优先级更改为较大的值。
         pq.contents[1].myPriority = 10;
-        System.out.println("PQ before sinking:");
+        System.out.println("下沉前的 PQ：");
         System.out.println(pq);
 
-        // Sink the root.
+        // 下沉根。
         pq.sink(1);
-        System.out.println("PQ after sinking:");
+        System.out.println("下沉后的 PQ：");
         System.out.println(pq);
         assertEquals("x2", pq.contents[1].myItem);
         assertEquals("x4", pq.contents[2].myItem);
@@ -349,7 +383,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         pq.insert("b", 2);
         pq.insert("c", 3);
         pq.insert("d", 4);
-        System.out.println("pq after inserting 10 items: ");
+        System.out.println("插入 10 个项后的 pq：");
         System.out.println(pq);
         assertEquals(10, pq.size());
         assertEquals("a", pq.contents[1].myItem);
