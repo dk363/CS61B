@@ -1,6 +1,8 @@
 package hw3.hash;
 
 import org.junit.Test;
+
+import static java.awt.Color.red;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -29,6 +31,13 @@ public class TestSimpleOomage {
           meaning no two SimpleOomages should EVER have the same
           hashCode UNLESS they have the same red, blue, and green values!
          */
+        SimpleOomage ooa = new SimpleOomage(10, 20, 30);
+        SimpleOomage ooa2 = new SimpleOomage(10, 20, 30);
+        int ooaCode = ooa.hashCode();
+        int ooa2Code = ooa2.hashCode();
+        assertEquals(ooa, ooa2);
+
+
     }
 
     @Test

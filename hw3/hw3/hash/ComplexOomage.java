@@ -13,6 +13,9 @@ public class ComplexOomage implements Oomage {
     public int hashCode() {
         int total = 0;
         for (int x : params) {
+            // 256 的倍数
+            // Hint 提示 x *= 256
+            // 导致溢出 x = 0
             total = total * 256;
             total = total + x;
         }
