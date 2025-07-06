@@ -40,7 +40,8 @@ public class SimpleOomage implements Oomage {
             green = green / 5;
             blue = blue / 5;
 
-            return (red << 12) | (green << 6) | blue;
+            int raw = (red << 12) | (green << 6) | blue;
+            return raw ^ (raw >>> 16);
         }
     }
 
