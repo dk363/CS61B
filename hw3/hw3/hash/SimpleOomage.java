@@ -36,11 +36,12 @@ public class SimpleOomage implements Oomage {
         if (!USE_PERFECT_HASH) {
             return red + green + blue;
         } else {
-            red = red / 5;
-            green = green / 5;
-            blue = blue / 5;
+            // rgb 如果直接写 red = red / 5 会改变原来的 red 的值
+            int r = red / 5;
+            int g = green / 5;
+            int b = blue / 5;
 
-            int raw = (red << 12) | (green << 6) | blue;
+            int raw = (r << 12) | (g << 6) | b;
             return raw ^ (raw >>> 16);
         }
     }
