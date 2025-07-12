@@ -13,6 +13,7 @@ public class Word implements WorldState {
 
     /**
      * Reads the wordfile specified by the wordfile variable.
+     * 读取由wordfile变量指定的单词文件。
      */
     private void readWords() {
         words = new HashSet<String>();
@@ -25,6 +26,7 @@ public class Word implements WorldState {
 
     /**
      * Creates a new Word.
+     * 创建一个新的Word文档。
      */
     public Word(String w, String g) {
         /* If words hasn't been read yet, read it. */
@@ -47,6 +49,8 @@ public class Word implements WorldState {
     /**
      * Computes the edit distance between a and b. From
      * https://rosettacode.org/wiki/Levenshtein_distance.
+     * 计算a与b之间的编辑距离。源自
+     * https://rosettacode.org/wiki/Levenshtein_distance。
      */
     private static int editDistance(String a, String b) {
         a = a.toLowerCase();
@@ -71,17 +75,20 @@ public class Word implements WorldState {
     }
 
 
+    /** 提供此 WorldState 所有邻居的可迭代对象。 */
     @Override
     public Iterable<WorldState> neighbors() {
-        Set<WorldState> neighbs = new HashSet<>();
+        Set<WorldState> neighbors = new HashSet<>();
         for (String s : words) {
             if (editDistance(this.word, s) == 1) {
-                neighbs.add(new Word(s, goal));
+                neighbors.add(new Word(s, goal));
             }
         }
-        return neighbs;
+        return neighbors;
     }
 
+    /** 提供到达目标所需移动次数的估计值，
+     * 该值必须小于或等于实际距离。 */
     @Override
     public int estimatedDistanceToGoal() {
         return editDistance(this.word, goal);

@@ -11,6 +11,10 @@ import static org.junit.Assert.*;
  * Local tester for the Solver class. You'll need to uncomment
  * in order to run the tests.
  */
+/**
+ * Solver类的本地测试器。需要取消注释
+ * 才能运行测试。
+ */
 public class TestSolver {
     public static class BoardPuzzleSolution {
         final String name;
@@ -44,6 +48,12 @@ public class TestSolver {
      *  the number of enqueues used by the reference solution to
      *  solve the puzzle. Returns null if String isn't a valid word puzzle.
      */
+    /** 输入一个单词谜题字符串并返回一个WordPuzzle对象。例如，"kept, tent, kept-kent-tent, 13"
+     *  将返回一个WordPuzzle，其中start = kept，goal = tent，
+     *  numMoves = 2，可能的解为 {"kept", "kent", "tent"}。
+     *  最后一个值未被此类使用，表示参考解在解决谜题时
+     *  的入队次数。如果字符串不是有效的单词谜题，则返回null。
+     */
     public static WordPuzzleSolution stringToWordPuzzle(String wp) {
         try {
             /* skip comments and blank lines */
@@ -62,7 +72,7 @@ public class TestSolver {
         }
     }
 
-/* Uncomment once you've written Solver.
+/* Uncomment once you've written Solver.*/
     @Test(timeout = 10000)
     public void testWordPuzzles() {
         In in = new In("input/word_puzzles.txt");
@@ -79,7 +89,7 @@ public class TestSolver {
             assertEquals(errorMessage, wps.numMoves, s.moves());
         }
     }
- */
+
 
  /* Uncomment everything in this block once you've written Board.
      public static Board readBoard(String filename) {

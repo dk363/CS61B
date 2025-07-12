@@ -8,6 +8,9 @@ public class EightPuzzleSolver {
      * Test routine for your Solver class. Uncomment and run to test
      * your basic functionality.
     **********************************************************************/
+    /***********************************************************************
+        * 用于测试 Solver 类的例程。取消注释并运行以测试基本功能。
+    **********************************************************************/
     /*public static void main(String[] args) {
         In in = new In(args[0]);
         int N = in.readInt();

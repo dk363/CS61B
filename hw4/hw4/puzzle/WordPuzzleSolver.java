@@ -5,8 +5,10 @@ public class WordPuzzleSolver {
     /***********************************************************************
      * Test routine for your Solver class. Uncomment and run to test
      * your basic functionality.
+     *  用于测试Solver类的常规程序。取消注释并运行以测试
+     *  您的基本功能。
      **********************************************************************/
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         String start = "cube";
         String goal = "tubes";
 
@@ -17,5 +19,5 @@ public class WordPuzzleSolver {
         for (WorldState ws : solver.solution()) {
             StdOut.println(ws);
         }
-    }*/
+    }
 }
