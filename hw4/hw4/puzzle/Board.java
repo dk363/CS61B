@@ -183,8 +183,9 @@ public class Board implements WorldState {
 
     @Override
     public int hashCode() {
-        int result = tiles != null ? tiles.hashCode() : 0;
-        result = 31 * result + tiles[0].hashCode();
+        int result = tiles != null ? Arrays.deepHashCode(tiles) : 0;
+        assert tiles != null;
+        result = 31 * result + Arrays.hashCode(tiles[0]);
         return result;
     }
 }
