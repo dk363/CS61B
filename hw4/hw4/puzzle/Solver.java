@@ -1,8 +1,7 @@
 package hw4.puzzle;
 import edu.princeton.cs.algs4.MinPQ;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Solver {
     /*
@@ -13,9 +12,6 @@ public class Solver {
         Solver(initial): 构造函数，用于解谜题，预先计算所有必要信息，
         使得moves()和solution()无需重复求解。使用A*算法进行解谜，
         默认存在解。
-
-
-
     */
 
     private List<WorldState> sequenceOfSolution; // 从初始WorldState到解的WorldState序列。
@@ -42,6 +38,7 @@ public class Solver {
 
         if (initial.isGoal()) {
             goalNode = ini;
+            return;
         }
 
         pq = new MinPQ<>((a, b) -> (a.moves + a.disToGoal) - (b.moves + b.disToGoal));
@@ -58,9 +55,10 @@ public class Solver {
         while (!minPriority.worldState.isGoal()) {
             for (WorldState n : minPriority.worldState.neighbors()) {
                 // 检查是否有重复
-                if (minPriority.prev != null && n.equals(minPriority.worldState)) {
+                if (minPriority.prev != null && n.equals(minPriority.prev.worldState)) {
                     continue;
                 }
+
                 int dis = n.estimatedDistanceToGoal();
                 SearchNode newNode = new SearchNode(n, minPriority.moves + 1, minPriority, dis);
                 pq.insert(newNode);
@@ -86,7 +84,7 @@ public class Solver {
     public Iterable<WorldState> solution() {
         // 从目标状态开始回溯 parent 节点，直到起点
         // 如果直接一边遍历一边加入的话，我们会加入一大堆无关紧要的节点
-        List<WorldState> path = new ArrayList<>();
+        List<WorldState> path = new LinkedList<>();
         SearchNode current = goalNode;
         while (current != null) {
             path.addFirst(current.worldState); // 插到前面
