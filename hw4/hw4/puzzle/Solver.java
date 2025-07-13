@@ -87,7 +87,7 @@ public class Solver {
         List<WorldState> path = new ArrayList<>();
         SearchNode current = goalNode;
         while (current != null) {
-            path.addFirst(current.worldState); // 插到前面
+            path.add(current.worldState); // 正常顺序插入
             current = current.prev;
         }
         sequenceOfSolution = path;
