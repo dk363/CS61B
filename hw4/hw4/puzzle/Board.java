@@ -1,6 +1,9 @@
 package hw4.puzzle;
 
 import edu.princeton.cs.algs4.Queue;
+
+import java.util.Arrays;
+
 import static java.lang.Math.abs;
 
 public class Board implements WorldState {
@@ -129,7 +132,7 @@ public class Board implements WorldState {
             return true;
         }
 
-        if (y == null || !(y instanceof Board)) {
+        if (!(y instanceof Board)) {
             return false;
         }
 
