@@ -1,6 +1,8 @@
 package hw4.puzzle;
+
 import edu.princeton.cs.algs4.MinPQ;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Solver {
@@ -90,6 +92,7 @@ public class Solver {
             path.add(current.worldState); // 正常顺序插入
             current = current.prev;
         }
+        Collections.reverse(path); // 反转得到从初始到目标的路径
         sequenceOfSolution = path;
         return sequenceOfSolution;
     }
