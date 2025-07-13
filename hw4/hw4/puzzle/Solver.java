@@ -84,7 +84,7 @@ public class Solver {
     public Iterable<WorldState> solution() {
         // 从目标状态开始回溯 parent 节点，直到起点
         // 如果直接一边遍历一边加入的话，我们会加入一大堆无关紧要的节点
-        List<WorldState> path = new LinkedList<>();
+        List<WorldState> path = new ArrayList<>();
         SearchNode current = goalNode;
         while (current != null) {
             path.addFirst(current.worldState); // 插到前面
