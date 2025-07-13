@@ -183,5 +183,10 @@ public class Board implements WorldState {
         return this.manhattan();
     }
 
-
+    @Override
+    public int hashCode() {
+        int result = tiles != null ? tiles.hashCode() : 0;
+        result = 31 * result + tiles[0].hashCode();
+        return result;
+    }
 }
