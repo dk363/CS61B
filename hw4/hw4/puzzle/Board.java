@@ -16,9 +16,7 @@ public class Board implements WorldState {
     public Board(int[][] tiles) {
         int[][] cowmoo = new int[tiles.length][tiles[0].length];
         for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[0].length; j++) {
-                cowmoo[i][j] = tiles[i][j];
-            }
+            System.arraycopy(tiles[i], 0, cowmoo[i], 0, tiles[0].length);
         }
         this.tiles = cowmoo;
     }
