@@ -19,7 +19,7 @@ public class Maze implements Observer {
     }
 
     /**
-     * Updates the drawing of the maze.
+     * 更新迷宫的绘制。
      */
     public void update(Observable o, Object arg) {
         MazeExplorer me = (MazeExplorer) o;
@@ -40,7 +40,7 @@ public class Maze implements Observer {
     }
 
     /**
-     * Returns neighbor vertices of vertex v.
+     * 返回顶点 v 的邻接顶点。
      */
     public Iterable<Integer> adj(int v) {
         int x = toX(v);
@@ -66,30 +66,29 @@ public class Maze implements Observer {
     }
 
     /**
-     * Returns x coordinate for given vertex.
-     * For example if N = 10, and V = 12, returns 2.
+     * 返回顶点 v 的 x 坐标。
+     * 例如，如果 N = 10，且 V = 12，则返回 2。
      */
     public int toX(int v) {
         return v % N + 1;
     }
 
     /**
-     * Returns y coordinate for given vertex.
-     * For example if N = 10, and V = 12, returns 1.
+     * 返回顶点 v 的 y 坐标。
+     * 例如，如果 N = 10，且 V = 12，则返回 1。
      */
     public int toY(int v) {
         return v / N + 1;
     }
 
     /**
-     * Returns one dimensional coordinate for vertex in position x, y.
+     * 返回 (x, y) 位置顶点的一维索引。
      */
     public int xyTo1D(int x, int y) {
         return (y - 1) * N + (x - 1);
     }
 
-
-    // returns true if wall exists
+    // 如果存在墙则返回 true
     private boolean wallExists(int x, int y, String s) {
         int tx = targetX(x, s);
         int ty = targetY(y, s);
@@ -119,21 +118,21 @@ public class Maze implements Observer {
     }
 
     /**
-     * Returns number of spaces in the maze.
+     * 返回迷宫中空间的数量。
      */
     public int V() {
         return N * N;
     }
 
     /**
-     * Returns size of the maze.
+     * 返回迷宫的大小。
      */
     public int N() {
         return N;
     }
 
     /**
-     * Creates a Maze from the given config file.
+     * 根据给定的配置文件创建迷宫。
      */
     public Maze(String configFilename) {
         In in = new In(configFilename);
@@ -191,8 +190,7 @@ public class Maze implements Observer {
     }
 
     /**
-     * Creates a Maze with given N, random seed, parameter p (not used by
-     * all maze types), and a maze type.
+     * 使用给定的 N、随机种子、参数 p（并非所有迷宫类型都使用）和迷宫类型创建迷宫。
      */
     public Maze(int N, int rseed, double pOpen, MazeType mt) {
         this.N = N;
@@ -200,7 +198,7 @@ public class Maze implements Observer {
     }
 
     /**
-     * Initializes maze based on parameters set up by constructors.
+     * 根据构造函数设定的参数初始化迷宫。
      */
     private void init(int rseed, double p, MazeType mt) {
         StdDraw.setXscale(0, N + 2);
@@ -218,22 +216,21 @@ public class Maze implements Observer {
     }
 
     private void generateBlankMaze() {
-        /** Create arrays of all false. */
+        /** 创建全为 false 的数组。 */
         north = new boolean[N + 2][N + 2];
         east = new boolean[N + 2][N + 2];
         south = new boolean[N + 2][N + 2];
         west = new boolean[N + 2][N + 2];
     }
 
-
-    // generate the maze
+    // 生成迷宫
     private void generateSingleGapMaze(int x, int y, boolean[][] marked) {
 
         marked[x][y] = true;
-        // while there is an unmarked neighbor
+        // 当存在未标记的邻居时
         while (!marked[x][y + 1] || !marked[x + 1][y] || !marked[x][y - 1] || !marked[x - 1][y]) {
 
-            // pick random neighbor (could use Knuth's trick instead)
+            // 随机选择一个邻居（也可以用 Knuth 技巧）
             while (true) {
 
                 double r = rgen.nextDouble();
@@ -259,7 +256,7 @@ public class Maze implements Observer {
         }
     }
 
-    // generate the maze starting from lower left
+    // 从左下角开始生成迷宫
     private void generateSingleGapMaze() {
         boolean[][] marked = new boolean[N + 2][N + 2];
         for (int x = 0; x < N + 2; x++) {
@@ -269,7 +266,7 @@ public class Maze implements Observer {
             marked[0][y] = marked[N + 1][y] = true;
         }
 
-        // initialize all walls as present
+        // 初始化所有墙为存在
         north = new boolean[N + 2][N + 2];
         east = new boolean[N + 2][N + 2];
         south = new boolean[N + 2][N + 2];
@@ -283,9 +280,8 @@ public class Maze implements Observer {
         generateSingleGapMaze(1, 1, marked);
     }
 
-
     private void generatePopenSolvableMaze(double pOpen) {
-        // initialize all walls as present
+        // 初始化所有墙为存在
         north = new boolean[N + 2][N + 2];
         east = new boolean[N + 2][N + 2];
         south = new boolean[N + 2][N + 2];
@@ -295,7 +291,6 @@ public class Maze implements Observer {
                 north[x][y] = east[x][y] = south[x][y] = west[x][y] = true;
             }
         }
-
 
         for (int x = 1; x < N + 1; x += 1) {
             for (int y = 1; y < N + 1; y += 1) {
@@ -331,14 +326,13 @@ public class Maze implements Observer {
     }
 
     /**
-     * Returns true if (x, y) is inside the bounds of the maze.
+     * 如果 (x, y) 在迷宫边界内则返回 true。
      */
     private boolean inBounds(int x, int y) {
         return (!(x == 0 || x == N + 1 || y == 0 || y == N + 1));
     }
 
-    // Returns x coordinate of target given source location
-    // and direction
+    // 给定源位置和方向，返回目标的 x 坐标
     private int targetX(int x, String s) {
         if (s.equals("West")) {
             return x - 1;
@@ -349,8 +343,7 @@ public class Maze implements Observer {
         return x;
     }
 
-    // Returns y coordinate of target given source location
-    // and direction
+    // 给定源位置和方向，返回目标的 y 坐标
     private int targetY(int y, String s) {
         if (s.equals("South")) {
             return y - 1;
@@ -362,7 +355,7 @@ public class Maze implements Observer {
     }
 
     /**
-     * Draws a filled circle of desired color c in cell i.
+     * 在第 i 个单元格中绘制一个指定颜色 c 的实心圆。
      */
     private void draw(int i, Color c) {
         StdDraw.setPenColor(c);
@@ -372,14 +365,14 @@ public class Maze implements Observer {
     }
 
     /**
-     * Draws a filled circle of desired color c in cell i.
+     * 在 (x, y) 单元格中绘制一个指定颜色 c 的实心圆。
      */
     private void draw(int x, int y, Color c) {
         StdDraw.setPenColor(c);
         StdDraw.filledCircle(x + 0.5, y + 0.5, 0.25);
     }
 
-    /* Draws the state of cell i, including any back edges. */
+    /* 绘制单元格 i 的状态，包括任何返回边。 */
     private void draw(int i, MazeExplorer me) {
         int x = toX(i);
         int y = toY(i);
@@ -393,7 +386,6 @@ public class Maze implements Observer {
         }
     }
 
-
     private void drawEdges(int i, MazeExplorer me) {
         int x = toX(i);
         int y = toY(i);
@@ -405,7 +397,7 @@ public class Maze implements Observer {
         }
     }
 
-    // draw the maze
+    // 绘制迷宫
     private void draw() {
         StdDraw.setPenColor(StdDraw.BLACK);
         for (int x = 1; x <= N; x++) {
@@ -426,7 +418,7 @@ public class Maze implements Observer {
         }
     }
 
-    /* Draws the maze with all spots numbered by 1D index. */
+    /* 绘制迷宫，并将所有点用一维索引编号。 */
     private void drawDotsByIndex() {
         for (int i = 0; i < V(); i += 1) {
             int x = toX(i);
@@ -439,7 +431,7 @@ public class Maze implements Observer {
         StdDraw.show();
     }
 
-    /* Draws the maze with all spots numbered by x, y coordinates. */
+    /* 绘制迷宫，并将所有点用 (x, y) 坐标编号。 */
     private void drawDotsByXY() {
         for (int i = 0; i < V(); i += 1) {
             int x = toX(i);
@@ -452,9 +444,8 @@ public class Maze implements Observer {
         StdDraw.show();
     }
 
-
-    // a test client
-   /* public static void main(String[] args) {
+    // 一个测试客户端
+    public static void main(String[] args) {
         int N = Integer.parseInt(args[0]);
         int rseed = Integer.parseInt(args[1]);
 
@@ -464,15 +455,14 @@ public class Maze implements Observer {
 //        MazeExplorer mdfp = new MazeAStarPath(maze, 4, 4, N, N);
         MazeExplorer mdfp = new MazeCycles(maze);
         mdfp.solve();
-    }*/
+    }
 
 
-    private int N;                 // dimension of maze
-    private boolean[][] north;     // is there a wall to north of cell i, j
+    private int N;                 // 迷宫的尺寸
+    private boolean[][] north;     // 单元格 (i, j) 的北墙是否存在
     private boolean[][] east;
     private boolean[][] south;
     private boolean[][] west;
     private static Random rgen;
     private static int DRAW_DELAY_MS = 50;
 }
-

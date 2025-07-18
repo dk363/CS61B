@@ -14,6 +14,7 @@ public abstract class MazeExplorer extends Observable {
 
     /**
      * Notify all Observers of a change.
+     * 通知所有观察者发生变更。
      */
     protected void announce() {
         setChanged();
@@ -35,6 +36,7 @@ public abstract class MazeExplorer extends Observable {
 
     /**
      * Solves the maze, modifying distTo and edgeTo as it goes.
+     * 解决迷宫问题，过程中更新 distTo 和 edgeTo 。
      */
     public abstract void solve();
 

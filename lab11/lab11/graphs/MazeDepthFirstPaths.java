@@ -9,6 +9,11 @@ public class MazeDepthFirstPaths extends MazeExplorer {
     public int[] edgeTo;
     public boolean[] marked;
     */
+    /* 继承的公共字段：
+    public int[] distTo;
+    public int[] edgeTo;
+    public boolean[] marked;
+    */
     private int s;
     private int t;
     private boolean targetFound = false;
