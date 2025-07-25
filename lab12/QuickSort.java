@@ -2,11 +2,11 @@ import edu.princeton.cs.algs4.Queue;
 
 public class QuickSort {
     /**
-     * Returns a new queue that contains the given queues catenated together.
-     *
-     * The items in q2 will be catenated after all of the items in q1.
+     * 返回一个新的队列，包含将给定的两个队列连接在一起的结果。
+     * q2 中的项会被连接在 q1 的所有项之后。
      */
-    private static <Item extends Comparable> Queue<Item> catenate(Queue<Item> q1, Queue<Item> q2) {
+    private static <Item extends Comparable>
+    Queue<Item> catenate(Queue<Item> q1, Queue<Item> q2) {
         Queue<Item> catenated = new Queue<Item>();
         for (Item item : q1) {
             catenated.enqueue(item);
@@ -17,11 +17,13 @@ public class QuickSort {
         return catenated;
     }
 
-    /** Returns a random item from the given queue. */
-    private static <Item extends Comparable> Item getRandomItem(Queue<Item> items) {
+    /** 从给定队列中返回一个随机项。 */
+    private static <Item extends Comparable>
+    Item getRandomItem(Queue<Item> items) {
         int pivotIndex = (int) (Math.random() * items.size());
         Item pivot = null;
-        // Walk through the queue to find the item at the given index.
+
+        // 遍历队列，找到给定索引处的项。
         for (Item item : items) {
             if (pivotIndex == 0) {
                 pivot = item;
@@ -29,31 +31,81 @@ public class QuickSort {
             }
             pivotIndex--;
         }
+
         return pivot;
     }
 
     /**
-     * Partitions the given unsorted queue by pivoting on the given item.
+     * 通过对给定项进行划分，将未排序的队列划分为多个部分。
      *
-     * @param unsorted  A Queue of unsorted items
-     * @param pivot     The item to pivot on
-     * @param less      An empty Queue. When the function completes, this queue will contain
-     *                  all of the items in unsorted that are less than the given pivot.
-     * @param equal     An empty Queue. When the function completes, this queue will contain
-     *                  all of the items in unsorted that are equal to the given pivot.
-     * @param greater   An empty Queue. When the function completes, this queue will contain
-     *                  all of the items in unsorted that are greater than the given pivot.
+     * @param unsorted  一个未排序项的队列
+     * @param pivot     用于划分的基准项
+     * @param less      一个空队列。函数执行完后，其中将包含所有小于 pivot 的项。
+     * @param equal     一个空队列。函数执行完后，其中将包含所有等于 pivot 的项。
+     * @param greater   一个空队列。函数执行完后，其中将包含所有大于 pivot 的项。
      */
-    private static <Item extends Comparable> void partition(
-            Queue<Item> unsorted, Item pivot,
+    private static <Item extends Comparable>
+    void partition(Queue<Item> unsorted, Item pivot,
             Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
-        // Your code here!
+
+        if (unsorted == null || unsorted.size() <= 1) {
+            return;
+        }
+
+        for (Item item : unsorted) {
+            int com = item.compareTo(pivot);
+
+            if (com == 0) {
+                equal.enqueue(item);
+            } else if (com > 0) {
+                greater.enqueue(item);
+            } else { // com < 0
+                less.enqueue(item);
+            }
+        }
     }
 
-    /** Returns a Queue that contains the given items sorted from least to greatest. */
+    /** 返回一个包含给定项，按从小到大排序的新队列。 */
     public static <Item extends Comparable> Queue<Item> quickSort(
             Queue<Item> items) {
-        // Your code here!
+        if (items == null || items.size() <= 1) {
+            return items;
+        }
+
+        Item pivot = getRandomItem(items);
+        Queue<Item> less = new Queue<>();
+        Queue<Item> equal = new Queue<>();
+        Queue<Item> greater = new Queue<>();
+
+        partition(items, pivot, less, equal, greater);
+
+        Queue<Item> lessSorted = quickSort(less);
+        Queue<Item> greaterSorted = quickSort(greater);
+
+        items = catenate(catenate(lessSorted, equal), greaterSorted);
+
         return items;
+    }
+
+    public static void main(String args[]) {
+        Queue<Integer> input = new Queue<>();
+
+        input.enqueue(5);
+        input.enqueue(3);
+        input.enqueue(7);
+        input.enqueue(2);
+        input.enqueue(4);
+
+        for (Integer i : input) {
+            System.out.print(i);
+        }
+
+        System.out.println();
+
+        Queue<Integer> sorted = quickSort(input);
+
+        for (Integer i : sorted) {
+            System.out.print(i);
+        }
     }
 }
