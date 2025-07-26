@@ -7,6 +7,10 @@ public class CountingSortTester {
      * Array that will cause CountingSort.naiveCountingSort to fail, but
      * CountingSort.betterCountingSort can handle.
      **/
+    /**
+        该数组会导致 CountingSort.naiveCountingSort 排序失败，但
+        CountingSort.betterCountingSort可以处理。
+     **/
     private static int[] someNegative = {9, 5, -4, 2, 1, -2, 5, 3, 0, -2, 3, 1, 1};
 
     /**
