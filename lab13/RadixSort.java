@@ -51,8 +51,10 @@ public class RadixSort {
         int[] starts = new int[R];
         int pos = 0;
         for (int i = 0; i < R; i++) {
-            starts[i] = pos;
-            pos += buckets[i];
+            if (buckets[i] > 0) {
+                starts[i] = pos;
+                pos += buckets[i];
+            }
         }
 
         // 将 string 重新排序
