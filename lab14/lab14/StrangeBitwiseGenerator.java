@@ -16,7 +16,7 @@ public class StrangeBitwiseGenerator implements Generator {
     public double next() {
         // 生成器的状态是 递增一的整数
         state = state + 1;
-        int weirdState = state & (state >> 3) & (state >> 8) % period;
+        int weirdState = state & (state >> 7) % period;
 
         double value = normalize(weirdState);
 
