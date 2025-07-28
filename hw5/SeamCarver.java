@@ -27,7 +27,7 @@ public class SeamCarver {
 
     // 返回当前的图片
     public Picture picture() {
-        return picture;
+        return new Picture(this.picture);
     }
 
     // 返回当前图片的宽度（单位：像素列数）
