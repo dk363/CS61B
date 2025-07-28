@@ -1,6 +1,6 @@
 import edu.princeton.cs.algs4.Picture;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class SeamCarver {
     private Picture picture;
@@ -67,48 +67,36 @@ public class SeamCarver {
         int dyB = down.getBlue() - up.getBlue();
         int deltaY2 = dyR * dyR + dyG * dyG + dyB * dyB;
 
-        return (double) (deltaY2 + deltaX2);
+        return deltaY2 + deltaX2;
     }
 
 
     // 找到一条水平的 seam（即从左到右的一条路径），返回路径上每列对应的行索引序列
     // 这里是要找到一条最短路径的问题
     public int[] findHorizontalSeam() {
-        return findSeam(true);
-    }
-
-    // 找到一条垂直的 seam（即从上到下的一条路径），返回路径上每行对应的列索引序列
-    public int[] findVerticalSeam() {
-        return findSeam(false);
-    }
-
-    // 将水平和竖直方向上的 方法 合在一起
-    private int[] findSeam(boolean isHorizontal) {
-        int w = isHorizontal ? width : height;
-        int h = isHorizontal ? height : width;
-
-        double[][] disTo = new double[w][h];
-        int[][] edgeTo = new int[w][h];
+        double[][] disTo = new double[width][height];
+        int[][] edgeTo = new int[width][height];
 
         // 初始化
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 disTo[x][y] = Double.MAX_VALUE;
             }
         }
 
-        for (int y = 0; y < h; y++) {
+
+        for (int y = 0; y < height; y++) {
             disTo[0][y] = energy[0][y];
         }
 
-        for (int x = 1; x < w; x++) {
-            for (int y = 0; y < h; y++) {
+        for (int x = 1; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                double e = energy[x][y];
                 // 三个方向
                 for (int dy = -1; dy <= 1; dy++) {
                     int prevY = y + dy;
                     // 前一个 Y 坐标是有效的
-                    if (prevY >= 0 && prevY < h) {
-                        double e = isHorizontal ? energy[x][y] : energy[y][x];
+                    if (prevY >= 0 && prevY < height) {
                         double preDis = disTo[x - 1][prevY];
                         double dis = preDis + e;
                         // 如果小于当前的dis 我们就更新因为目标是找到最短的路径
@@ -124,19 +112,74 @@ public class SeamCarver {
         // 找到最短的 dist
         double minDist = Double.MAX_VALUE;
         int minIndex = -1;
-        for (int y = 0; y < h; y++) {
-            if (minDist > disTo[w - 1][y]) {
-                minDist = disTo[w - 1][y];
+        for (int y = 0; y < height; y++) {
+            if (minDist > disTo[width - 1][y]) {
+                minDist = disTo[width - 1][y];
                 minIndex = y;
             }
         }
 
-        int[] path = new int[w];
-        path[w - 1] = minIndex;
+        int[] path = new int[width];
+        path[width - 1] = minIndex;
         // 因为这里我们 path 保存的是 y 方向上的坐标
         // 所以
-        for (int x = w - 1; x > 0; x--) {
+        for (int x = width - 1; x > 0; x--) {
             path[x - 1] = edgeTo[x][path[x]];
+        }
+
+        return path;
+    }
+
+    // 找到一条垂直的 seam（即从上到下的一条路径），返回路径上每行对应的列索引序列
+    public int[] findVerticalSeam() {
+        double[][] disTo = new double[width][height];
+        int[][] edgeTo = new int[width][height];
+
+        // 初始化
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                disTo[x][y] = Double.MAX_VALUE;
+            }
+        }
+
+        // 初始化第一行的距离
+        for (int x = 0; x < width; x++) {
+            disTo[x][0] = energy[x][0];
+        }
+
+        // 动态规划计算从上到下的最短路径
+        for (int y = 1; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                double e = energy[x][y];
+                for (int dx = -1; dx <= 1; dx++) {
+                    int prevX = x + dx;
+                    if (prevX >= 0 && prevX < width) {
+                        double preDis = disTo[prevX][y - 1];
+                        double dis = preDis + e;
+                        if (dis < disTo[x][y]) {
+                            disTo[x][y] = dis;
+                            edgeTo[x][y] = prevX;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 找到最后一行中能量最小的终点
+        double minDist = Double.MAX_VALUE;
+        int minIndex = -1;
+        for (int x = 0; x < width; x++) {
+            if (minDist > disTo[x][height - 1]) {
+                minDist = disTo[x][height - 1];
+                minIndex = x;
+            }
+        }
+
+        // 回溯路径
+        int[] path = new int[height];
+        path[height - 1] = minIndex;
+        for (int y = height - 1; y > 0; y--) {
+            path[y - 1] = edgeTo[path[y]][y];
         }
 
         return path;
@@ -145,63 +188,26 @@ public class SeamCarver {
 
     // 删除指定的水平 seam 路径（每列移除指定行的像素）
     public void removeHorizontalSeam(int[] seam) {
-        removeSeam(true, seam);
+        if (!isValidSeam(seam)) {
+            throw new IllegalArgumentException("seam is not continuous");
+        }
+        SeamRemover.removeHorizontalSeam(picture, seam);
     }
 
     // 删除指定的垂直 seam 路径（每行移除指定列的像素）
     public void removeVerticalSeam(int[] seam) {
-        removeSeam(false, seam);
+        if (!isValidSeam(seam)) {
+            throw new IllegalArgumentException("seam is not continuous");
+        }
+        SeamRemover.removeVerticalSeam(picture, seam);
     }
 
-    // 行和列的问题一定要画图理解
-    private void removeSeam(boolean isHorizontal, int[] seam) {
-        if ((isHorizontal && (height <= 1 || seam.length != width)) ||
-                (!isHorizontal && (width <= 1 || seam.length != height))) {
-            throw new IllegalArgumentException("Invalid seam size");
-        }
-
-
-        for (int i = 0; i < seam.length; i++) {
-            int val = seam[i];
-            int bound = isHorizontal ? width : height;
-            // seam 不是有效值
-            if (val < 0 || val >= bound) {
-                throw new IllegalArgumentException("seam index out of bound");
-            }
-            // 不能够构成一条路径
-            if (i > 0 && Math.abs(seam[i] - seam[i - 1]) > 1) {
-                throw new IllegalArgumentException("seam discontinuous");
+    private boolean isValidSeam(int[] seam) {
+        for (int i = 1; i < seam.length; i++) {
+            if (Math.abs(seam[i] - seam[i - 1]) > 1) {
+                return false;
             }
         }
-
-        Picture newPic = isHorizontal ?
-                new Picture(width, height - 1) :
-                new Picture(width - 1, height);
-
-        // 重新复制一副新的图画，跳过要去掉的部分
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                if (isHorizontal) {
-                    if (y < seam[x]) {
-                        newPic.set(x, y, picture.get(x, y));
-                    } else if (y > seam[x]) {
-                        newPic.set(x, y - 1, picture.get(x, y));
-                    }
-                } else {
-                    if (x < seam[y]) {
-                        newPic.set(x, y, picture.get(x, y));
-                    } else if (x > seam[y]) {
-                        newPic.set(x - 1, y, picture.get(x, y));
-                    }
-                }
-            }
-        }
-
-        this.picture = newPic;
-        this.width = picture.width();
-        this.height = picture.height();
-        this.energy = new double[width][height];
-        calculateEnergy();
-
+        return true;
     }
 }

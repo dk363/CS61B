@@ -94,12 +94,12 @@ public class SeamCarverVisualizer {
             frame.setResizable(false);
             frame.pack();
             frame.setVisible(true);
-         }
+        }
 
          // draw
-         frame.setContentPane(img.getJLabel());
-         frame.revalidate();
-         frame.repaint();
+        frame.setContentPane(img.getJLabel());
+        frame.revalidate();
+        frame.repaint();
     }
 
     public static void main(String[] args) {
