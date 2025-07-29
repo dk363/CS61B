@@ -71,7 +71,7 @@ public class TestPlip {
         surrounded.put(Direction.RIGHT, new Empty());
         Action actual2 = p.chooseAction(surrounded);
         Action expected2 = new Action(Action.ActionType.REPLICATE, Direction.RIGHT);
-        actual2.equals(expected2);
+        assertEquals(actual2, expected2);
 
         // 能量 < 1 stay
         p.move();
@@ -79,7 +79,7 @@ public class TestPlip {
         assertEquals(0.9, p.energy(), 0.01);
         Action actual3 = p.chooseAction(surrounded);
         Action expected3 = new Action(Action.ActionType.STAY);
-        actual3.equals(expected3);
+        assertEquals(actual3, expected3);
     }
 
     public static void main(String[] args) {

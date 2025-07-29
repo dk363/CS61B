@@ -84,12 +84,12 @@ public class HugLife {
 
         else if (worldName.equals("strugggz")) {
             System.out.println("你需要取消注释 strugggz 测试！");
-            /*addCreature(11, 1, new SampleCreature());
+            addCreature(11, 1, new SampleCreature());
             addCreature(12, 12, new Plip());
             addCreature(3, 3, new Plip());
             addCreature(4, 3, new Plip());
 
-            addCreature(2, 2, new Clorus(1));*/
+            addCreature(2, 2, new Clorus(1));
         } else {
             System.out.println("未识别的世界名称！");
         }
@@ -109,10 +109,10 @@ public class HugLife {
             int x = in.readInt();
             int y = in.readInt();
             switch (creature) {
-                //准备好测试 clorus 类时取消注释
-                // case "clorus":
-                //     h.addCreature(x, y, new Clorus(1));
-                //     break;
+                // 准备好测试 clorus 类时取消注释
+                case "clorus":
+                    h.addCreature(x, y, new Clorus(1));
+                    break;
                 case "plip":
                     h.addCreature(x, y, new Plip());
                     break;

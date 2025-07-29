@@ -7,7 +7,6 @@ import huglife.HugLifeUtils;
 import java.awt.Color;
 import java.util.Map;
 import java.util.List;
-import java.util.Random;
 
 import static huglife.HugLifeUtils.*;
 
