@@ -7,20 +7,29 @@ import huglife.HugLifeUtils;
 import java.awt.Color;
 import java.util.Map;
 import java.util.List;
+import java.util.Random;
 
-/** An implementation of a motile pacifist photosynthesizer.
- *  @author Josh Hug
- */
+import static huglife.HugLifeUtils.*;
+
+/** 一种能够移动的和平光合作用生物的实现。@author Josh Hug */
 public class Plip extends Creature {
 
-    /** red color. */
+    /** 红色值。 */
     private int r;
-    /** green color. */
+    /** 绿色值。 */
     private int g;
-    /** blue color. */
+    /** 蓝色值。 */
     private int b;
+    /** name plip*/
+    private final String name = "plip";
+    /** MOVE 行动消耗的能量 */
+    private final double MOVE_ENERGY = 0.15;
+    /** STAY 消耗的能量 */
+    private final double STAY_ENERGY = 0.2;
+    /** 最大的能量值 */
+    private final double MAX_ENERGY = 2;
 
-    /** creates plip with energy equal to E. */
+    /** 创建一个能量为 E 的 plip。 */
     public Plip(double e) {
         super("plip");
         r = 0;
@@ -29,58 +38,77 @@ public class Plip extends Creature {
         energy = e;
     }
 
-    /** creates a plip with energy equal to 1. */
+    /** 创建一个能量为 1 的 plip。 */
     public Plip() {
         this(1);
     }
 
-    /** Should return a color with red = 99, blue = 76, and green that varies
-     *  linearly based on the energy of the Plip. If the plip has zero energy,
-     *  it should have a green value of 63. If it has max energy, it should
-     *  have a green value of 255. The green value should vary with energy
-     *  linearly in between these two extremes. It's not absolutely vital
-     *  that you get this exactly correct.
+    @Override
+    /** 返回名字 plip*/
+    public String name() {
+        return name;
+    }
+
+    /** 应该返回一个颜色，其 red = 99，blue = 76，
+     *  green 随 plip 的能量线性变化。
+     *  若能量为 0，则 green = 63；
+     *  若为最大能量，则 green = 255；
+     *  中间按线性关系变化。
+     *  不需要完全精确。
      */
     public Color color() {
-        g = 63;
+        r = 99;
+        b = 76;
+        g = (int) (96 * energy + 63);
         return color(r, g, b);
     }
 
-    /** Do nothing with C, Plips are pacifists. */
+    /** 不对 C 进行任何操作，Plip 是和平主义者。 */
     public void attack(Creature c) {
     }
 
-    /** Plips should lose 0.15 units of energy when moving. If you want to
-     *  to avoid the magic number warning, you'll need to make a
-     *  private static final variable. This is not required for this lab.
+    /** Plip 移动时损失 0.15 单位能量。
+     *  若要避免魔法数字警告，可将其提为常量（非本实验要求）。
      */
     public void move() {
+        energy -= MOVE_ENERGY;
     }
 
-
-    /** Plips gain 0.2 energy when staying due to photosynthesis. */
+    /** Plip 停留时通过光合作用获得 0.2 单位能量。 */
     public void stay() {
+        energy = Math.min(energy + STAY_ENERGY, MAX_ENERGY);
     }
 
-    /** Plips and their offspring each get 50% of the energy, with none
-     *  lost to the process. Now that's efficiency! Returns a baby
-     *  Plip.
+    /** Plip 和其复制体各获得 50% 能量，过程无能量损失。
+     *  真是高效！返回一个 baby Plip。
      */
     public Plip replicate() {
-        return this;
+        energy = energy / 2;
+        return new Plip(energy);
     }
 
-    /** Plips take exactly the following actions based on NEIGHBORS:
-     *  1. If no empty adjacent spaces, STAY.
-     *  2. Otherwise, if energy >= 1, REPLICATE.
-     *  3. Otherwise, if any Cloruses, MOVE with 50% probability.
-     *  4. Otherwise, if nothing else, STAY
+    /** Plip 根据邻居 NEIGHBORS 执行以下行为：
+     *  1. 若无空邻居，则 STAY；
+     *  2. 否则若能量 >= 1，则 REPLICATE；
+     *  3. 否则若存在 Clorus，以 50% 概率 MOVE；
+     *  4. 否则 STAY。
      *
-     *  Returns an object of type Action. See Action.java for the
-     *  scoop on how Actions work. See SampleCreature.chooseAction()
-     *  for an example to follow.
+     *  返回一个 Action 类型的对象。
+     *  可参考 Action.java 和 SampleCreature.chooseAction()。
      */
     public Action chooseAction(Map<Direction, Occupant> neighbors) {
+        List<Direction> empties = getNeighborsOfType(neighbors, "empty");
+        boolean anyClorus = neighbors.values().stream().anyMatch(o -> o.name().equals("clorus"));
+
+        if (empties.isEmpty()) {
+            return new Action(Action.ActionType.STAY);
+        }
+        if (energy >= 1) {
+            return new Action(Action.ActionType.REPLICATE, randomEntry(empties));
+        }
+        if (anyClorus && random() < 0.5) {
+            return new Action(Action.ActionType.MOVE, randomEntry(empties));
+        }
         return new Action(Action.ActionType.STAY);
     }
 

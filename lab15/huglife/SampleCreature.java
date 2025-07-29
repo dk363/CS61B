@@ -3,73 +3,69 @@ import java.awt.Color;
 import java.util.Map;
 import java.util.List;
 
-/** Example of a creature you might create for your world.
+/** 你可以为你的世界创建的生物示例。
  *
- *  The SampleCreature is an immortal pacifist that wanders the
- *  world eternally, never replicating or attacking.
+ *  SampleCreature 是一个不死的和平主义者，它会永远在世界中游荡，
+ *  从不复制或攻击。
  *
- *  SCs doesn't like crowds, and if surrounded on three sides, will
- *  move into any available space.
+ *  SC 不喜欢拥挤，如果被三面包围，它会移动到任何可用空间中。
  *
- *  Even if not surrounded, the SC will take a step with 20%
- *  probability towards any empty space nearby.
+ *  即使没有被包围，SC 也有 20% 的概率向周围的空位移动一步。
  *
- *  If a SampleCreature stands still, its color will change slightly,
- *  but only in the red portion of its color.
+ *  如果 SampleCreature 静止不动，它的颜色会略微变化，
+ *  但只会影响红色部分。
  *
  *  @author Josh Hug
  */
 public class SampleCreature extends Creature {
-    /** red color. */
+    /** 红色值。 */
     private int r = 155;
-    /** green color. */
+    /** 绿色值。 */
     private int g = 61;
-    /** blue color. */
+    /** 蓝色值。 */
     private int b = 76;
-    /** probability of taking a move when ample space available. */
+    /** 当空间充足时移动的概率。 */
     private double moveProbability = 0.2;
-    /** degree of color shift to allow. */
+    /** 允许的颜色变化程度。 */
     private int colorShift = 5;
-    /** fraction of energy to retain when replicating. */
+    /** 复制时保留的能量比例。 */
     private double repEnergyRetained = 0.3;
-    /** fraction of energy to bestow upon offspring. */
+    /** 分给后代的能量比例。 */
     private double repEnergyGiven = 0.65;
 
-
-    /** Creates a sample creature with energy E. This
-     *  value isn't relevant to the life of a SampleCreature, since
-     *  its energy should never decrease.
+    /** 创建一个能量值为 E 的 sample creature。
+     *  这个值对 SampleCreature 的生命无关紧要，
+     *  因为它的能量永远不会减少。
      */
     public SampleCreature(double e) {
         super("samplecreature");
         energy = e;
     }
 
-    /** Default constructor: Creatures creature with energy 1. */
+    /** 默认构造函数：创建一个能量为 1 的 creature。 */
     public SampleCreature() {
         this(1);
     }
 
-    /** Uses method from Occupant to return a color based on personal.
-      * r, g, b values */
+    /** 使用 Occupant 提供的方法，根据自身的 r、g、b 值返回颜色。 */
     public Color color() {
         return color(r, g, b);
     }
 
-    /** Do nothing, SampleCreatures are pacifists and won't pick this
-     * action anyway. C is safe, for now. */
+    /** 什么也不做，SampleCreature 是和平主义者，不会选择攻击。
+     *  C 是安全的，暂时。
+     */
     public void attack(Creature c) {
     }
 
-    /** Nothing special happens when a SampleCreature moves. */
+    /** 当 SampleCreature 移动时没有特别的行为。 */
     public void move() {
     }
 
-    /** If a SampleCreature stands still, its red color shifts slightly, with
-     *  special code to keep it from going negative or above 255.
+    /** 如果 SampleCreature 静止不动，它的红色值会稍微变化，
+     *  有特殊代码保证不小于 0 且不超过 255。
      *
-     *  You will probably find the HugLifeUtils library useful for generating
-     *  random information.
+     *  你可能会发现 HugLifeUtils 工具类对生成随机数很有用。
      */
     public void stay() {
         r += HugLifeUtils.randomInt(-colorShift, colorShift);
@@ -77,14 +73,13 @@ public class SampleCreature extends Creature {
         r = Math.max(r, 0);
     }
 
-    /** Sample Creatures take actions according to the following rules about
-     *  NEIGHBORS:
-     *  1. If surrounded on three sides, move into the empty space.
-     *  2. Otherwise, if there are any empty spaces, move into one of them with
-     *     probabiltiy given by moveProbability.
-     *  3. Otherwise, stay.
+    /** SampleCreature 根据以下关于邻居的规则采取行动：
+     *  1. 如果被三面包围，就移动到唯一的空位中。
+     *  2. 否则，如果有任何空位，以 moveProbability 的概率
+     *     移动到其中一个空位。
+     *  3. 否则，保持静止。
      *
-     *  Returns the action selected.
+     *  返回选定的动作。
      */
     public Action chooseAction(Map<Direction, Occupant> neighbors) {
         List<Direction> empties = getNeighborsOfType(neighbors, "empty");
@@ -103,17 +98,16 @@ public class SampleCreature extends Creature {
         return new Action(Action.ActionType.STAY);
     }
 
-    /** If a SampleCreature were to replicate, it would keep only 30% of its
-      * energy, and a new baby creature would be returned that possesses 65%,
-      * with 5% lost to the universe.
-      *
-      * However, as you'll see above, SampleCreatures never choose to
-      * replicate, so this method should never be called. It is provided
-      * because the Creature class insist we know how to replicate boo.
-      *
-      * If somehow this method were called, it would return a new
-      * SampleCreature.
-      */
+    /** 如果 SampleCreature 要复制，它会保留 30% 的能量，
+     *  并生成一个拥有 65% 能量的新生物，
+     *  其余 5% 能量消散到宇宙中。
+     *
+     *  然而，如上所述，SampleCreature 从不选择复制，
+     *  所以这个方法永远不该被调用。它仅因为 Creature 类
+     *  要求我们知道如何复制而存在，唉。
+     *
+     *  如果这个方法被调用，它将返回一个新的 SampleCreature。
+     */
     public SampleCreature replicate() {
         energy = energy * repEnergyRetained;
         double babyEnergy = energy * repEnergyGiven;

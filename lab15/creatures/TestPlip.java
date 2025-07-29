@@ -9,8 +9,10 @@ import huglife.Occupant;
 import huglife.Impassible;
 import huglife.Empty;
 
+import javax.management.ImmutableDescriptor;
+
 /** Tests the plip class   
- *  @authr FIXME
+ *  @authr Kuangdi Xu
  */
 
 public class TestPlip {
@@ -36,11 +38,15 @@ public class TestPlip {
 
     @Test
     public void testReplicate() {
-
+        Plip p = new Plip(2);
+        Plip q = p.replicate();
+        assertEquals(1, p.energy(), 0.01);
+        assertNotSame(p, q);
     }
 
-    //@Test
+    @Test
     public void testChoose() {
+        // 周围不可通行 只能stay
         Plip p = new Plip(1.2);
         HashMap<Direction, Occupant> surrounded = new HashMap<Direction, Occupant>();
         surrounded.put(Direction.TOP, new Impassible());
@@ -56,6 +62,24 @@ public class TestPlip {
         Action expected = new Action(Action.ActionType.STAY);
 
         assertEquals(expected, actual);
+
+        // 有空隙，且能量 > 1 繁殖
+        surrounded.clear();
+        surrounded.put(Direction.TOP, new Impassible());
+        surrounded.put(Direction.BOTTOM, new Impassible());
+        surrounded.put(Direction.LEFT, new Impassible());
+        surrounded.put(Direction.RIGHT, new Empty());
+        Action actual2 = p.chooseAction(surrounded);
+        Action expected2 = new Action(Action.ActionType.REPLICATE, Direction.RIGHT);
+        actual2.equals(expected2);
+
+        // 能量 < 1 stay
+        p.move();
+        p.move();
+        assertEquals(0.9, p.energy(), 0.01);
+        Action actual3 = p.chooseAction(surrounded);
+        Action expected3 = new Action(Action.ActionType.STAY);
+        actual3.equals(expected3);
     }
 
     public static void main(String[] args) {

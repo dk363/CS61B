@@ -1,31 +1,24 @@
 package huglife;
 
-/** Actions are created by Creatures to signify intent, and take effect via
- *  the HugLife simulator.
+/** 动作由生物创建以表示其意图，并通过 HugLife 模拟器生效。
  *
- *  Note there are three Action constructors, each with their own semantics!
- *  They are:
- *  1. Action(ActionType at): Used for creating actions that don't involve
- *     movement.
- *  2. Action(ActionType at, Direction d): Used for creating actions that
- *     involve relative movement.
- *  3. Action(ActionType at, int x, int y): Used for creation actions that
- *     involve absolute movement. NOT NECESSARY FOR THIS LAB, but included in
- *     case you want to do anything fancy.
+ *  注意：本类有三个构造方法，每个有不同的语义！
+ *  它们是：
+ *  1. Action(ActionType at)：用于创建不涉及移动的动作。
+ *  2. Action(ActionType at, Direction d)：用于创建涉及相对移动的动作。
+ *  3. Action(ActionType at, int x, int y)：用于创建涉及绝对位置移动的动作。
+ *     本实验不需要此构造方法，但若你想做一些花哨的功能，可使用它。
  *
- *  There are five ActionTypes: MOVE, REPLICATE, ATTACK, STAY, and DIE. If you
- *    specify MOVE, REPLICATE, ATTACK, you must use one of the movement
- *    constructors.
- *
- *    If you specify STAY or DIE, you must use one the non-movement
- *    constructor.
+ *  有五种 ActionType 类型：MOVE（移动）、REPLICATE（复制）、ATTACK（攻击）、STAY（停留）、DIE（死亡）。
+ *  若使用 MOVE、REPLICATE、ATTACK，则必须使用带方向或位置的构造方法。
+ *  若使用 STAY 或 DIE，则必须使用无方向的构造方法。
  *
  *  @author Josh Hug
  */
 
 public class Action {
-    /** There are exactly five possible actions. MOVE, REPLICATE, and ATTACK
-     *  are movement based. STAY and DIE are non-movement actions.
+    /** 精确有五种可能的动作类型。MOVE、REPLICATE 和 ATTACK 属于移动类动作。
+     *  STAY 和 DIE 属于非移动类动作。
      */
     public enum ActionType {
         MOVE,
@@ -35,19 +28,18 @@ public class Action {
         DIE
     }
 
-    /** Actions without absolute position should use UNDEFINED position. */
+    /** 对于不涉及绝对位置的动作，使用 UNDEFINED 位置值。 */
     private static final int UNDEFINED = -126;
 
-    /** Create an action involving no movement. A little strange to throw
-      *  a runtime error here if the ActionType is a movement based action,
-      *  since in principle we can catch this at compile time. However, doing
-      *  so would require nested enums and there is enough new syntax in this
-      *  lab as it is. Result is of type AT.
-      */
+    /** 创建一个不涉及移动的动作。
+     * 如果传入的是移动类的 ActionType，将抛出运行时错误。
+     * 虽然理论上可以在编译时捕获此类错误，但那将需要嵌套枚举，
+     * 鉴于本实验已有足够多的新语法，故未采用。
+     * 动作类型为 AT。
+     */
     public Action(ActionType at) {
         if (isMoveAction(at)) {
-            throw new IllegalArgumentException("Attempted to create action "
-                             + "of type " + at + " with no direction.");
+            throw new IllegalArgumentException("试图创建类型为 " + at + " 的动作但未提供方向。");
         }
         type = at;
         dir = null;
@@ -55,11 +47,10 @@ public class Action {
         y = UNDEFINED;
     }
 
-    /** Creates action of type AT and direction D. */
+    /** 创建类型为 AT，方向为 D 的动作。 */
     public Action(ActionType at, Direction d) {
         if (!isMoveAction(at)) {
-            throw new IllegalArgumentException("Attempted to create action "
-                             + "of type " + at + " with a direction.");
+            throw new IllegalArgumentException("试图创建类型为 " + at + " 的动作但提供了方向。");
         }
         this.type = at;
         this.dir = d;
@@ -67,11 +58,10 @@ public class Action {
         this.y = UNDEFINED;
     }
 
-    /** Creates action of type AT and target location X and Y. */
+    /** 创建类型为 AT，目标位置为 X 和 Y 的动作。 */
     public Action(ActionType at, int x, int y) {
         if (!isMoveAction(at)) {
-            throw new IllegalArgumentException("Attempted to create action "
-                             + "of type " + at + " with a location.");
+            throw new IllegalArgumentException("试图创建类型为 " + at + " 的动作但提供了位置。");
         }
         type = at;
         dir = null;
@@ -79,26 +69,25 @@ public class Action {
         this.y = y;
     }
 
-    /** The type of the action. */
+    /** 动作的类型。 */
     public final ActionType type;
 
-    /** The direction of the action (if applicable). */
+    /** 动作的方向（如果适用）。 */
     public final Direction dir;
 
-    /** The x target of the action (if applicable). */
+    /** 动作目标位置的 x 坐标（如果适用）。 */
     public final int x;
 
-    /** The y target of the action (if applicable). */
+    /** 动作目标位置的 y 坐标（如果适用）。 */
     public final int y;
 
-    /** Returns whether the action AT is a move action. */
+    /** 返回 AT 是否为移动类动作。 */
     public boolean isMoveAction(ActionType at) {
         return ((at == ActionType.MOVE) || (at == ActionType.REPLICATE)
-                 || (at == ActionType.ATTACK));
+                || (at == ActionType.ATTACK));
     }
 
-
-    /** Returns whether this Action is equal to OTHER. */
+    /** 判断该动作是否与 OTHER 相等。 */
     public boolean equals(Object other) {
         if (other == this) {
             return true;
@@ -111,20 +100,19 @@ public class Action {
         }
         Action that = (Action) other;
         return this.x == that.x && this.y == that.y && this.dir == that.dir
-               && this.type == that.type;
+                && this.type == that.type;
     }
 
-    /** Returns string representation of this action. */
+    /** 返回该动作的字符串表示形式。 */
     public String toString() {
         if ((dir == null) && (x != UNDEFINED)) {
             return String.format("Action: " + type + " at " + x + ", "
-                                 + y + ".");
+                    + y + ".");
         } else if ((dir != null)) {
             return String.format("Action: " + type + " in direction "
-                                 + dir + ".");
+                    + dir + ".");
         } else {
             return String.format("Action: " + type + ".");
         }
-
     }
 }

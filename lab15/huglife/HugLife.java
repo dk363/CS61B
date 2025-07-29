@@ -1,50 +1,46 @@
 package huglife;
 import creatures.*;
 
-/** World facing class for HugLife simulator.
+/** 面向世界的 HugLife 模拟器类。
  *  @author Josh Hug
  */
 public class HugLife {
 
-    /** Size of the world. Probably best to keep this under 100 
-      *  or so.
-     */
+    /** 世界的大小。最好保持在 100 以下。 */
     public static final int WORLD_SIZE = 15;
 
-    /** Maximum number of cycles to simulate by default. */
+    /** 默认模拟的最大周期数。 */
     public static final int MAX_CYCLES = 1000;
 
-    /** Time in milliseconds between simulation steps. 
-     *  Reduce to make things run faster.
+    /** 每一步模拟之间的时间间隔（毫秒）。
+     *  降低该值可以加快运行速度。
      */
     public static final int PAUSE_TIME_PER_SIMSTEP = 100;
 
-    /** If true, the HugLifeAnimator class saves an image after every cycle.
-     *  After all cycles have finished, or on exit, these images are combined into an animated GIF.
-     *  Requires ImageMagick and only works in SIMULATE_BY_CYCLE mode.
-     *  Consider reducing PAUSE_TIME_PER_SIMSTEP when this flag is on, since file writes will take some time.
-     *  See the HugLifeAnimator class for details.
+    /** 如果为 true，则 HugLifeAnimator 类在每个周期后保存一张图像。
+     *  所有周期结束或退出时，这些图像将被合成为一个 GIF 动画。
+     *  需要安装 ImageMagick，并且仅在 SIMULATE_BY_CYCLE 模式下工作。
+     *  若启用此标志，建议减少 PAUSE_TIME_PER_SIMSTEP，因为文件写入会耗时。
+     *  详见 HugLifeAnimator 类。
      */
     public static final boolean GENERATE_GIF = false;
 
-    /** Name of output GIF (relative to working directory), assuming GENERATE_GIF is true.
-     *  Should end in ".gif".
+    /** GIF 输出文件名（相对于工作目录），在 GENERATE_GIF 为 true 时有效。
+     *  应以 ".gif" 结尾。
      */
     public static final String GIF_OUTPUT_FILENAME = System.currentTimeMillis() + ".gif";
 
-    /** Creates a new world grid of size N for this HugLife simulation. */
+    /** 为 HugLife 模拟创建一个新的 N 大小的世界网格。 */
     public HugLife(int N) {
         g = new Grid(N);
     }
 
-    /** Adds a creature C to the HugLife universe at X, Y. */
+    /** 向 HugLife 宇宙中坐标为 X, Y 的位置添加生物 C。 */
     public void addCreature(int x, int y, Creature c) {
         g.createCreature(x, y, c);
     }
 
-    /** Simulates the world for CYCLES cycles, simulation
-     *  one entire cycle between 
-     */
+    /** 模拟世界 CYCLES 个周期，每个周期完整模拟一次。 */
     public void simulate(int cycles) {
         if (GENERATE_GIF) {
             HugLifeAnimator.init(GIF_OUTPUT_FILENAME);
@@ -63,9 +59,7 @@ public class HugLife {
         }
     }
 
-    /** Simulates the world for TICS tics, simulating
-     *   TICSBETWEENDRAW in between world drawing events.
-     */
+    /** 模拟 TICS 个 tic，每 TICSBETWEENDRAW 次 tic 绘制一次世界状态。 */
     public void simulate(int tics, int ticsBetweenDraw) {
         for (int i = 0; i < tics; i++) {
             g.tic();
@@ -76,9 +70,7 @@ public class HugLife {
         }
     }
 
-    /** A set of precanned hard-coded worlds. This is terrible
-     *  style, but hey it's very easy to write this way.
-     */
+    /** 一组预设的硬编码世界。这种写法风格很差，但写起来很简单。 */
     public void initialize(String worldName) {
         if (worldName.equals("samplesolo")) {
             addCreature(11, 1, new SampleCreature());
@@ -91,7 +83,7 @@ public class HugLife {
         }
 
         else if (worldName.equals("strugggz")) {
-            System.out.println("You need to uncomment the strugggz test!");
+            System.out.println("你需要取消注释 strugggz 测试！");
             /*addCreature(11, 1, new SampleCreature());
             addCreature(12, 12, new Plip());
             addCreature(3, 3, new Plip());
@@ -99,16 +91,15 @@ public class HugLife {
 
             addCreature(2, 2, new Clorus(1));*/
         } else {
-            System.out.println("World name not recognized!");
+            System.out.println("未识别的世界名称！");
         }
     }
 
     /**
-     * Reads the world from file with worldName and intialized
-     * a HugLife with the contents of the file
-     * NOTE: DON'T USE THIS; KEPT FOR TESTING PURPOSES
-     * @param  worldName name of the file to read from
-     * @return a newly initialized HugLife
+     * 从名为 worldName 的文件中读取世界并初始化一个 HugLife。
+     * 注意：不要使用这个方法；保留仅供测试使用。
+     * @param  worldName 要读取的文件名
+     * @return 一个初始化好的 HugLife 实例
      */
     public static HugLife readWorld(String worldName) {
         In in = new In("huglife/" + worldName + ".world");
@@ -118,7 +109,7 @@ public class HugLife {
             int x = in.readInt();
             int y = in.readInt();
             switch (creature) {
-                //Uncomment this when you're ready to test out your clorus class
+                //准备好测试 clorus 类时取消注释
                 // case "clorus":
                 //     h.addCreature(x, y, new Clorus(1));
                 //     break;
@@ -133,15 +124,15 @@ public class HugLife {
         return h;
     }
 
-    /** Runs world name specified by ARGS[0]. */
+    /** 运行由 ARGS[0] 指定的世界。 */
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.out.println("Usage: java huglife.HugLife [worldname]");
+            System.out.println("用法: java huglife.HugLife [worldname]");
             return;
         }
         HugLife h = readWorld(args[0]);
         // HugLife h = new HugLife(WORLD_SIZE);
-        // h.initialize(args[0]); DON'T USE ME
+        // h.initialize(args[0]); 不要使用我
 
         if (SIMULATE_BY_CYCLE) {
             h.simulate(MAX_CYCLES);
@@ -150,20 +141,20 @@ public class HugLife {
         }
     }
 
-    /** Grid for holding all the creatures. */
+    /** 保存所有生物的网格。 */
     private Grid g;
 
 
-    /** By default, the simulator simulates by cycle, i.e.
-     *  allows every creature to move before drawing. 
-     *  If you set this to false, then the world will be drawn
-     *  between moves (much slower).
+    /** 默认情况下，模拟器按周期模拟，即
+     *  允许每个生物移动一次再绘制。
+     *  如果设置为 false，世界将在每次移动后绘制
+     *  （会慢很多）。
      */
     public static final boolean SIMULATE_BY_CYCLE = true;
 
-    /** Maximum number of tics to simulate by default if using. */
+    /** 如果使用 tics 模式，默认最大模拟 tics 数。 */
     public static final int MAX_TICS = 100000;
-    /** Number of tics to simulate between draw ops. */
+    /** 两次绘制操作之间模拟的 tic 数。 */
     public static final int TICS_BETWEEN_DRAW = 10;
 
 }

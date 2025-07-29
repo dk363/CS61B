@@ -3,32 +3,31 @@ import java.awt.Color;
 
 /**
  *  @author Josh Hug
- *  Represents possible occupants of the grid world.
- *  Intended for extension by:
- *     Creature, Empty, and Impassible only.
+ *  表示网格世界中可能的占据者。
+ *  仅供以下类扩展使用：
+ *     Creature、Empty 和 Impassible。
  */
 public abstract class Occupant {
-    /** Name for this type of Occupant. */
+    /** 此类型占据者的名称。 */
     protected final String name;
 
-    /** Creates an Occupant with name equal to N. */
+    /** 创建一个名称为 N 的占据者。 */
     public Occupant(String n) {
         name = n;
     }
 
-    /** Returns the name of this occupant. */
+    /** 返回该占据者的名称。 */
     public String name() {
         return name;
     }
 
-    /** Returns a Color object given R, G, and B values.
-     *  Intended for use by subtypes so they don't have to import
-     *  or think about colors.
+    /** 给定 R、G、B 值返回一个 Color 对象。
+     *  供子类使用，避免它们自己导入或处理颜色相关逻辑。
      */
     protected static Color color(int r, int g, int b) {
         return new Color(r, g, b);
     }
 
-    /** Required method that returns a color. */
+    /** 必须实现的方法：返回一个颜色对象。 */
     public abstract Color color();
 }
